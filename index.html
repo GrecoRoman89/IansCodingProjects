@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Python Portfolio</title>
+    <style>
+        :root {
+            --primary: #3776ab;
+            --secondary: #ffd43b;
+            --dark: #333;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --code-bg: #f0f4f8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #2a5a85);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .upload-section {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .upload-section h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, textarea, select {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2a5a85;
+        }
+        
+        .projects-section {
+            margin-top: 3rem;
+        }
+        
+        .projects-section h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .projects-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background-color: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .project-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .project-image {
+            height: 200px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .project-info {
+            padding: 1.5rem;
+        }
+        
+        .project-category {
+            display: inline-block;
+            background-color: rgba(55, 118, 171, 0.1);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .project-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .project-desc {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .project-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .project-links a:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        footer p {
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        /* Code display styles */
+        .code-preview-btn {
+            background-color: var(--secondary);
+            color: var(--dark);
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-right: 0.5rem;
+        }
+        
+        .code-preview-btn:hover {
+            background-color: #e6c235;
+        }
+        
+        .code-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow: auto;
+        }
+        
+        .code-modal-content {
+            background-color: white;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 8px;
+            position: relative;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .code-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .code-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .code-action-btn {
+            background-color: #f1f1f1;
+            border: none;
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .code-action-btn:hover {
+            background-color: #e1e1e1;
+        }
+        
+        .code-tabs {
+            display: flex;
+            overflow-x: auto;
+            background-color: #f5f5f5;
+            padding: 0.5rem 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .code-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 0.5rem;
+            background-color: #f8f8f8;
+            font-size: 0.9rem;
+        }
+        
+        .code-tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: 600;
+        }
+        
+        .code-container {
+            flex: 1;
+            overflow: auto;
+            padding: 1rem;
+        }
+        
+        .code-content {
+            display: none;
+        }
+        
+        .code-content.active {
+            display: block;
+        }
+        
+        .code-display {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            tab-size: 4;
+            counter-reset: line;
+            line-height: 1.5;
+        }
+        
+        .code-display code {
+            display: block;
+            position: relative;
+            font-family: 'Courier New', monospace;
+            color: #333;
+        }
+        
+        .code-display .python-keyword {
+            color: #0033b3;
+            font-weight: bold;
+        }
+        
+        .code-display .python-string {
+            color: #067d17;
+        }
+        
+        .code-display .python-comment {
+            color: #8c8c8c;
+            font-style: italic;
+        }
+        
+        .code-display .python-number {
+            color: #1750eb;
+        }
+        
+        .code-display .python-function {
+            color: #7d3c98;
+        }
+        
+        .file-upload-container {
+            border: 2px dashed #ddd;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .file-upload-container.dragover {
+            border-color: var(--primary);
+            background-color: rgba(55, 118, 171, 0.05);
+        }
+        
+        .python-files-list {
+            margin-top: 1rem;
+        }
+        
+        .python-file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: #f5f5f5;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .python-file-item .file-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .remove-file {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My Python Portfolio</h1>
+        <p>Showcasing my best Python projects and experiments</p>
+    </header>
+    
+    <div class="container">
+        <section class="upload-section">
+            <h2>Upload New Project</h2>
+            <form id="upload-form" class="upload-form">
+                <div class="form-group">
+                    <label for="project-title">Project Title</label>
+                    <input type="text" id="project-title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-category">Category</label>
+                    <select id="project-category" required>
+                        <option value="">Select a category</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Machine Learning">Machine Learning</option>
+                        <option value="Automation">Automation</option>
+                        <option value="Game Development">Game Development</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-description">Description</label>
+                    <textarea id="project-description" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-github">GitHub URL (optional)</label>
+                    <input type="url" id="project-github">
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-live">Live Demo URL (optional)</label>
+                    <input type="url" id="project-live">
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-image">Project Image</label>
+                    <input type="file" id="project-image" accept="image/*">
+                </div>
+                
+                <div class="form-group">
+                    <label>Python Files</label>
+                    <div class="file-upload-container" id="python-file-drop">
+                        <p>Drag Python files here or click to upload</p>
+                        <input type="file" id="python-files" accept=".py" multiple style="display: none;">
+                    </div>
+                    <div class="python-files-list" id="python-files-list"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="python-code">Or paste Python code directly</label>
+                    <textarea id="python-code" placeholder="# Enter your Python code here..."></textarea>
+                </div>
+                
+                <button type="submit">Add Project</button>
+            </form>
+        </section>
+        
+        <section class="projects-section">
+            <h2>My Projects</h2>
+            
+            <div class="projects-filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="Data Science">Data Science</button>
+                <button class="filter-btn" data-filter="Web Development">Web Development</button>
+                <button class="filter-btn" data-filter="Machine Learning">Machine Learning</button>
+                <button class="filter-btn" data-filter="Automation">Automation</button>
+                <button class="filter-btn" data-filter="Game Development">Game Development</button>
+                <button class="filter-btn" data-filter="Other">Other</button>
+            </div>
+            
+            <div class="projects-grid" id="projects-grid">
+                <!-- Sample project card -->
+                <div class="project-card" data-category="Data Science">
+                    <div class="project-image">
+                        <img src="/api/placeholder/400/320" alt="Data Visualization Dashboard">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-category">Data Science</span>
+                        <h3 class="project-title">Data Visualization Dashboard</h3>
+                        <p class="project-desc">A dashboard built with Python and Dash for visualizing complex datasets.</p>
+                        <div class="project-links">
+                            <a href="#" target="_blank">GitHub</a>
+                            <a href="#" target="_blank">Live Demo</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Another sample project card -->
+                <div class="project-card" data-category="Machine Learning">
+                    <div class="project-image">
+                        <img src="/api/placeholder/400/320" alt="Image Recognition Model">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-category">Machine Learning</span>
+                        <h3 class="project-title">Image Recognition Model</h3>
+                        <p class="project-desc">A custom CNN model built with TensorFlow for recognizing objects in images.</p>
+                        <div class="project-links">
+                            <a href="#" target="_blank">GitHub</a>
+                            <a href="#" target="_blank">Live Demo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div class="notification" id="notification">Project added successfully!</div>
+    
+    <!-- Code Preview Modal -->
+    <div class="code-modal" id="code-modal">
+        <div class="code-modal-content">
+            <div class="code-header">
+                <div class="code-title" id="code-modal-title">Project Code</div>
+                <div class="code-actions">
+                    <button class="code-action-btn" id="copy-code-btn">Copy Code</button>
+                    <button class="code-action-btn" id="close-code-modal">Close</button>
+                </div>
+            </div>
+            <div class="code-tabs" id="code-tabs"></div>
+            <div class="code-container" id="code-container"></div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 My Python Portfolio. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Project data storage
+        let projects = [
+            {
+                title: "Data Visualization Dashboard",
+                category: "Data Science",
+                description: "A dashboard built with Python and Dash for visualizing complex datasets.",
+                github: "#",
+                live: "#",
+                image: "/api/placeholder/400/320",
+                pythonFiles: [
+                    {
+                        name: "dashboard.py",
+                        content: `import dash
+from dash import dcc, html
+import plotly.express as px
+import pandas as pd
+
+# Initialize the Dash app
+app = dash.Dash(__name__)
+
+# Load the data
+def load_data():
+    # Sample data loading
+    df = pd.read_csv('data.csv')
+    return df
+
+# Create the dashboard layout
+app.layout = html.Div([
+    html.H1("Data Visualization Dashboard"),
+    
+    html.Div([
+        html.Div([
+            html.H3("Select Parameters"),
+            dcc.Dropdown(
+                id='x-axis-dropdown',
+                options=[{'label': col, 'value': col} for col in ['column1', 'column2', 'column3']],
+                value='column1'
+            ),
+            dcc.Dropdown(
+                id='y-axis-dropdown',
+                options=[{'label': col, 'value': col} for col in ['column1', 'column2', 'column3']],
+                value='column2'
+            ),
+        ], className='four columns'),
+        
+        html.Div([
+            dcc.Graph(id='main-graph')
+        ], className='eight columns')
+    ], className='row'),
+    
+    html.Div([
+        dcc.Graph(id='secondary-graph')
+    ])
+])
+
+# Define callbacks to update the graphs
+@app.callback(
+    [dash.dependencies.Output('main-graph', 'figure'),
+     dash.dependencies.Output('secondary-graph', 'figure')],
+    [dash.dependencies.Input('x-axis-dropdown', 'value'),
+     dash.dependencies.Input('y-axis-dropdown', 'value')]
+)
+def update_graphs(x_value, y_value):
+    df = load_data()
+    
+    # Create the main scatter plot
+    fig1 = px.scatter(df, x=x_value, y=y_value, 
+                     color='category', title=f'{y_value} vs {x_value}')
+    
+    # Create a histogram as secondary graph
+    fig2 = px.histogram(df, x=y_value, title=f'Distribution of {y_value}')
+    
+    return fig1, fig2
+
+# Run the application
+if __name__ == '__main__':
+    app.run_server(debug=True)`
+                    }
+                ]
+            },
+            {
+                title: "Image Recognition Model",
+                category: "Machine Learning",
+                description: "A custom CNN model built with TensorFlow for recognizing objects in images.",
+                github: "#",
+                live: "#", 
+                image: "/api/placeholder/400/320",
+                pythonFiles: [
+                    {
+                        name: "model.py",
+                        content: `import tensorflow as tf
+from tensorflow.keras import layers, models
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load and preprocess the data
+def load_data():
+    (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.cifar10.load_data()
+    
+    # Normalize pixel values to be between 0 and 1
+    train_images, test_images = train_images / 255.0, test_images / 255.0
+    
+    return (train_images, train_labels), (test_images, test_labels)
+
+# Build the CNN model
+def build_model():
+    model = models.Sequential()
+    
+    # Convolutional layers
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    
+    # Dense layers
+    model.add(layers.Flatten())
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dense(10))
+    
+    # Compile the model
+    model.compile(optimizer='adam',
+                 loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                 metrics=['accuracy'])
+    
+    return model
+
+# Train the model
+def train_model(model, train_images, train_labels):
+    history = model.fit(train_images, train_labels, epochs=10, 
+                       validation_split=0.2)
+    return history
+
+# Evaluate the model
+def evaluate_model(model, test_images, test_labels):
+    test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
+    print(f"Test accuracy: {test_acc}")
+    return test_acc
+
+# Plot training history
+def plot_history(history):
+    plt.figure(figsize=(12, 4))
+    
+    plt.subplot(1, 2, 1)
+    plt.plot(history.history['accuracy'], label='Training Accuracy')
+    plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    plt.title('Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend()
+    
+    plt.subplot(1, 2, 2)
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title('Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    
+    plt.tight_layout()
+    plt.show()
+
+# Make predictions with the model
+def predict_image(model, image):
+    class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
+                  'dog', 'frog', 'horse', 'ship', 'truck']
+    
+    # Add batch dimension and predict
+    image_batch = np.expand_dims(image, 0)
+    predictions = model.predict(image_batch)
+    
+    # Get the predicted class
+    predicted_class = np.argmax(predictions[0])
+    confidence = tf.nn.softmax(predictions[0])
+    
+    return class_names[predicted_class], confidence[predicted_class].numpy()
+
+# Main function
+if __name__ == "__main__":
+    (train_images, train_labels), (test_images, test_labels) = load_data()
+    model = build_model()
+    history = train_model(model, train_images, train_labels)
+    evaluate_model(model, test_images, test_labels)
+    plot_history(history)
+    
+    # Test with a sample image
+    sample_idx = 25
+    sample_image = test_images[sample_idx]
+    true_label = test_labels[sample_idx][0]
+    
+    class_name, confidence = predict_image(model, sample_image)
+    print(f"Predicted: {class_name} with {confidence:.2f} confidence")`
+                    },
+                    {
+                        name: "data_processing.py",
+                        content: `import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import cv2
+import os
+
+def load_images_from_folder(folder):
+    """Load all images from a folder and convert to numpy arrays."""
+    images = []
+    labels = []
+    for category in os.listdir(folder):
+        category_path = os.path.join(folder, category)
+        if os.path.isdir(category_path):
+            for img_file in os.listdir(category_path):
+                img_path = os.path.join(category_path, img_file)
+                try:
+                    img = cv2.imread(img_path)
+                    if img is not None:
+                        img = cv2.resize(img, (224, 224))  # Resize to standard size
+                        images.append(img)
+                        labels.append(category)
+                except Exception as e:
+                    print(f"Error loading {img_path}: {e}")
+    
+    return np.array(images), np.array(labels)
+
+def preprocess_data(images, labels):
+    """Preprocess image data for model training."""
+    # Convert to float and normalize
+    X = images.astype('float32') / 255.0
+    
+    # Encode labels
+    from sklearn.preprocessing import LabelEncoder
+    label_encoder = LabelEncoder()
+    y = label_encoder.fit_transform(labels)
+    
+    # Split into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    return X_train, X_test, y_train, y_test, label_encoder
+
+def augment_data(images, labels):
+    """Augment the dataset with transformed versions of existing images."""
+    from tensorflow.keras.preprocessing.image import ImageDataGenerator
+    
+    datagen = ImageDataGenerator(
+        rotation_range=20,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True,
+        fill_mode='nearest'
+    )
+    
+    # Preview augmented images
+    def preview_augmentation(image):
+        plt.figure(figsize=(12, 12))
+        for i in range(9):
+            ax = plt.subplot(3, 3, i + 1)
+            batch = image.reshape((1,) + image.shape)
+            augmentation = datagen.flow(batch, batch_size=1)
+            plt.imshow(augmentation[0][0].astype('uint8'))
+            plt.axis('off')
+        plt.tight_layout()
+        plt.show()
+    
+    # Preview with a sample image
+    if len(images) > 0:
+        preview_augmentation(images[0])
+    
+    return datagen
+
+def visualize_data(images, labels, label_encoder=None):
+    """Visualize sample images from each class."""
+    if label_encoder is not None:
+        unique_labels = label_encoder.classes_
+    else:
+        unique_labels = np.unique(labels)
+    
+    plt.figure(figsize=(15, 10))
+    for i, label in enumerate(unique_labels):
+        if label_encoder is not None:
+            indices = np.where(labels == label_encoder.transform([label])[0])[0]
+        else:
+            indices = np.where(labels == label)[0]
+        
+        if len(indices) > 0:
+            for j in range(min(5, len(indices))):
+                if i * 5 + j < 25:  # Limit to 25 subplots
+                    plt.subplot(5, 5, i * 5 + j + 1)
+                    plt.imshow(images[indices[j]].astype('uint8'))
+                    plt.title(label)
+                    plt.axis('off')
+    
+    plt.tight_layout()
+    plt.show()
+
+if __name__ == "__main__":
+    # Example usage
+    data_folder = "dataset/images"
+    
+    # Check if the folder exists
+    if os.path.exists(data_folder):
+        images, labels = load_images_from_folder(data_folder)
+        X_train, X_test, y_train, y_test, label_encoder = preprocess_data(images, labels)
+        
+        print(f"Training data shape: {X_train.shape}")
+        print(f"Testing data shape: {X_test.shape}")
+        
+        visualize_data(images, labels, label_encoder)
+        augment_data(images, labels)
+    else:
+        print(f"Data folder {data_folder} not found.")`
+                    }
+                ]
+            }
+        ];
+        
+        // Load projects from local storage if available
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('portfolio-projects')) {
+                projects = JSON.parse(localStorage.getItem('portfolio-projects'));
+                renderProjects();
+            }
+            
+            // Set up form submission
+            document.getElementById('upload-form').addEventListener('submit', addProject);
+            
+            // Set up filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', filterProjects);
+            });
+        });
+        
+        // Python file storage
+        let pythonFiles = [];
+        
+        // Initialize file upload handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('python-file-drop');
+            const fileInput = document.getElementById('python-files');
+            const filesList = document.getElementById('python-files-list');
+            
+            // Click on drop zone to trigger file input
+            dropZone.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            // Handle file selection
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // Drag and drop handlers
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length > 0) {
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+            
+            // Initialize code modal handlers
+            document.getElementById('close-code-modal').addEventListener('click', () => {
+                document.getElementById('code-modal').style.display = 'none';
+            });
+            
+            document.getElementById('copy-code-btn').addEventListener('click', copyCurrentCode);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                const modal = document.getElementById('code-modal');
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+        
+        // Handle file selection
+        function handleFileSelect(e) {
+            handleFiles(e.target.files);
+        }
+        
+        // Process selected files
+        function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.name.endsWith('.py')) {
+                    readPythonFile(file);
+                }
+            }
+        }
+        
+        // Read Python file content
+        function readPythonFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                
+                // Add to pythonFiles array
+                pythonFiles.push({
+                    name: file.name,
+                    content: content
+                });
+                
+                // Update the UI
+                updatePythonFilesList();
+            };
+            reader.readAsText(file);
+        }
+        
+        // Update the list of Python files in the UI
+        function updatePythonFilesList() {
+            const filesList = document.getElementById('python-files-list');
+            filesList.innerHTML = '';
+            
+            pythonFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'python-file-item';
+                fileItem.innerHTML = `
+                    <span class="file-name">${file.name}</span>
+                    <button class="remove-file" data-index="${index}">×</button>
+                `;
+                filesList.appendChild(fileItem);
+            });
+            
+            // Add remove file handlers
+            document.querySelectorAll('.remove-file').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    pythonFiles.splice(index, 1);
+                    updatePythonFilesList();
+                });
+            });
+        }
+        
+        // Highlight Python syntax
+        function highlightPythonSyntax(code) {
+            // Replace keywords with highlighted spans
+            const keywords = ['def', 'class', 'import', 'from', 'if', 'elif', 'else', 'while', 'for', 'in', 'return', 'and', 'or', 'not', 'try', 'except', 'finally', 'with', 'as', 'lambda', 'None', 'True', 'False'];
+            
+            // Escape HTML special characters
+            let highlightedCode = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            
+            // Highlight strings
+            highlightedCode = highlightedCode.replace(/(["'])(.*?)\1/g, '<span class="python-string">        // Add new project
+        function addProject(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const title = document.getElementById('project-title').value;
+            const category = document.getElementById('project-category').value;
+            const description = document.getElementById('project-description').value;
+            const github = document.getElementById('project-github').value;
+            const live = document.getElementById('project-live').value;
+            
+            // Handle image upload
+            const imageInput = document.getElementById('project-image');
+            let imageSrc = "/api/placeholder/400/320"; // Default placeholder
+            
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageSrc = e.target.result;
+                    
+                    // Create project object and save
+                    saveProject(title, category, description, github, live, imageSrc);
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                // No image uploaded, use default and save
+                saveProject(title, category, description, github, live, imageSrc);
+            }
+        }</span>');
+            
+            // Highlight comments
+            highlightedCode = highlightedCode.replace(/(#.*)$/gm, '<span class="python-comment">$1</span>');
+            
+            // Highlight numbers
+            highlightedCode = highlightedCode.replace(/\b(\d+)\b/g, '<span class="python-number">$1</span>');
+            
+            // Highlight keywords
+            keywords.forEach(keyword => {
+                const regex = new RegExp(`\\b${keyword}\\b`, 'g');
+                highlightedCode = highlightedCode.replace(regex, `<span class="python-keyword">${keyword}</span>`);
+            });
+            
+            // Highlight functions
+            highlightedCode = highlightedCode.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g, '<span class="python-function">$1</span>(');
+            
+            return highlightedCode;
+        }
+        
+        // Copy current code to clipboard
+        function copyCurrentCode() {
+            const activeTab = document.querySelector('.code-tab.active');
+            if (activeTab) {
+                const fileIndex = parseInt(activeTab.getAttribute('data-index'));
+                const code = pythonFiles[fileIndex].content;
+                
+                navigator.clipboard.writeText(code)
+                    .then(() => {
+                        document.getElementById('copy-code-btn').textContent = 'Copied!';
+                        setTimeout(() => {
+                            document.getElementById('copy-code-btn').textContent = 'Copy Code';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+            }
+        }
+        
+        // Show code modal
+        function showCodeModal(project) {
+            const modal = document.getElementById('code-modal');
+            const modalTitle = document.getElementById('code-modal-title');
+            const codeTabs = document.getElementById('code-tabs');
+            const codeContainer = document.getElementById('code-container');
+            
+            // Set modal title
+            modalTitle.textContent = `${project.title} - Python Code`;
+            
+            // Clear previous content
+            codeTabs.innerHTML = '';
+            codeContainer.innerHTML = '';
+            
+            // Create tabs and content for each file
+            if (project.pythonFiles && project.pythonFiles.length > 0) {
+                project.pythonFiles.forEach((file, index) => {
+                    // Create tab
+                    const tab = document.createElement('div');
+                    tab.className = 'code-tab' + (index === 0 ? ' active' : '');
+                    tab.setAttribute('data-index', index);
+                    tab.textContent = file.name;
+                    tab.addEventListener('click', function() {
+                        // Update active tab
+                        document.querySelectorAll('.code-tab').forEach(tab => tab.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Show corresponding content
+                        document.querySelectorAll('.code-content').forEach(content => content.classList.remove('active'));
+                        document.getElementById(`code-content-${index}`).classList.add('active');
+                    });
+                    codeTabs.appendChild(tab);
+                    
+                    // Create content
+                    const content = document.createElement('div');
+                    content.className = 'code-content' + (index === 0 ? ' active' : '');
+                    content.id = `code-content-${index}`;
+                    
+                    const codeDisplay = document.createElement('div');
+                    codeDisplay.className = 'code-display';
+                    codeDisplay.innerHTML = `<code>${highlightPythonSyntax(file.content)}</code>`;
+                    
+                    content.appendChild(codeDisplay);
+                    codeContainer.appendChild(content);
+                });
+            } else {
+                codeContainer.innerHTML = '<p>No Python files available for this project.</p>';
+            }
+            
+            // Show the modal
+            modal.style.display = 'block';
+        }
+        
+        // Add new project
+        function addProject(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const title = document.getElementById('project-title').value;
+            const category = document.getElementById('project-category').value;
+            const description = document.getElementById('project-description').value;
+            const github = document.getElementById('project-github').value;
+            const live = document.getElementById('project-live').value;
+            const codeInput = document.getElementById('python-code').value;
+            
+            // Handle image upload
+            const imageInput = document.getElementById('project-image');
+            let imageSrc = "/api/placeholder/400/320"; // Default placeholder
+            
+            // Prepare Python files array
+            let projectPythonFiles = [...pythonFiles]; // Clone the array
+            
+            // Add direct code input if provided
+            if (codeInput.trim() !== '') {
+                projectPythonFiles.push({
+                    name: 'main.py',
+                    content: codeInput
+                });
+            }
+            
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageSrc = e.target.result;
+                    
+                    // Create project object and save
+                    saveProject(title, category, description, github, live, imageSrc, projectPythonFiles);
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                // No image uploaded, use default and save
+                saveProject(title, category, description, github, live, imageSrc, projectPythonFiles);
+            }
+        }
+        
+        // Save project data
+        function saveProject(title, category, description, github, live, image, pythonFiles = []) {
+            // Create new project object
+            const newProject = {
+                title,
+                category,
+                description,
+                github,
+                live,
+                image,
+                pythonFiles
+            };
+            
+            // Add to projects array
+            projects.unshift(newProject); // Add to beginning of array
+            
+            // Save to local storage
+            localStorage.setItem('portfolio-projects', JSON.stringify(projects));
+            
+            // Re-render projects
+            renderProjects();
+            
+            // Reset form
+            document.getElementById('upload-form').reset();
+            pythonFiles = [];
+            updatePythonFilesList();
+            
+            // Show notification
+            showNotification();
+        }
+        
+        // Show notification
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Render projects to the grid
+        function renderProjects(filterCategory = 'all') {
+            const projectsGrid = document.getElementById('projects-grid');
+            projectsGrid.innerHTML = '';
+            
+            const filteredProjects = filterCategory === 'all' 
+                ? projects 
+                : projects.filter(project => project.category === filterCategory);
+            
+            if (filteredProjects.length === 0) {
+                projectsGrid.innerHTML = '<p>No projects found in this category.</p>';
+                return;
+            }
+            
+            filteredProjects.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card';
+                projectCard.setAttribute('data-category', project.category);
+                
+                // Check if project has Python files
+                const hasPythonFiles = project.pythonFiles && project.pythonFiles.length > 0;
+                
+                projectCard.innerHTML = `
+                    <div class="project-image">
+                        <img src="${project.image}" alt="${project.title}">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-category">${project.category}</span>
+                        <h3 class="project-title">${project.title}</h3>
+                        <p class="project-desc">${project.description}</p>
+                        <div class="project-links">
+                            ${hasPythonFiles ? `<button class="code-preview-btn" data-project-index="${projects.indexOf(project)}">View Code</button>` : ''}
+                            ${project.github ? `<a href="${project.github}" target="_blank">GitHub</a>` : ''}
+                            ${project.live ? `<a href="${project.live}" target="_blank">Live Demo</a>` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                projectsGrid.appendChild(projectCard);
+            });
+            
+            // Add event listeners to code preview buttons
+            document.querySelectorAll('.code-preview-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const projectIndex = parseInt(this.getAttribute('data-project-index'));
+                    showCodeModal(projects[projectIndex]);
+                });
+            });
+        }
+        
+        // Filter projects
+        function filterProjects() {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            // Get filter category
+            const filterCategory = this.getAttribute('data-filter');
+            
+            // Render filtered projects
+            renderProjects(filterCategory);
+        }
+    </script>
+</body>
+</html>
