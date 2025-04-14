@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aquarium Fish Advisor</title>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Find the perfect fish for your aquarium based on water parameters, tank size, and compatibility.">
+    <meta name="keywords" content="aquarium, fish compatibility, aquarium fish, freshwater fish, saltwater fish, fish advisor">
+    <!-- Add Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eefaff',
+                            100: '#dbf5ff',
+                            200: '#b8ecff',
+                            300: '#83e0ff',
+                            400: '#48caff',
+                            500: '#1eaeff',
+                            600: '#0090f0',
+                            700: '#0073cc',
+                            800: '#0060a7',
+                            900: '#085389',
+                            950: '#053256',
+                        },
+                        surface: {
+                            50: '#f6f8fa',
+                            100: '#edf1f5',
+                            200: '#dde5ee',
+                            800: '#1c2333',
+                            850: '#171d2b',
+                            900: '#111827',
+                            950: '#0a0f1a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'subtle': '0 2px 10px rgba(0, 0, 0, 0.05)',
+                        'card': '0 4px 12px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #60a5fa;
+        }
+
+        /* Category badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.675rem;
+            margin-left: 5px;
+        }
+        .freshwater {
+            background-color: rgba(6, 95, 70, 0.6);
+            color: #d1fae5;
+            border: 1px solid rgba(6, 95, 70, 0.8);
+        }
+        .saltwater {
+            background-color: rgba(30, 64, 175, 0.6);
+            color: #dbeafe;
+            border: 1px solid rgba(30, 64, 175, 0.8);
+        }
+        .brackish {
+            background-color: rgba(133, 77, 14, 0.6);
+            color: #fef3c7;
+            border: 1px solid rgba(133, 77, 14, 0.8);
+        }
+        .coldwater {
+            background-color: rgba(3, 105, 161, 0.6);
+            color: #e0f2fe;
+            border: 1px solid rgba(3, 105, 161, 0.8);
+        }
+        
+        /* Modern styling */
+        .input-field {
+            background-color: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            color: white;
+            transition: all 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: rgba(96, 165, 250, 0.8);
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
+        }
+        
+        /* Water type selection */
+        .water-type-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .water-type-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(transparent, rgba(96, 165, 250, 0.1));
+            transition: height 0.3s ease;
+            pointer-events: none;
+        }
+        .water-type-btn:hover::after {
+            height: 100%;
+        }
+        .water-type-btn.active {
+            transform: translateY(-2px);
+        }
+        
+        /* Fish card */
+        .fish-card {
+            background-color: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .fish-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            background-color: rgba(30, 41, 59, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-surface-950 via-surface-900 to-surface-850">
+    <div class="container p-4 mx-auto max-w-6xl py-6">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-300 to-primary-500 inline-block">Aquarium Fish Advisor</h1>
+            <p class="text-gray-400 mt-2">Find the perfect fish for your tank based on water parameters</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Tank Parameters Panel -->
+            <div class="bg-surface-850/80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-surface-800/50">
+                <h2 class="text-xl font-semibold text-primary-300 mb-5">Tank Parameters</h2>
+                
+                <!-- Water Type Selection -->
+                <div class="mb-6">
+                    <h3 class="text-md font-medium mb-3 text-gray-300">Water Type</h3>
+                    <div class="grid grid-cols-3 gap-3" id="water-type-selector">
+                        <div class="water-type-btn active text-center py-3 px-2 rounded-lg cursor-pointer bg-primary-600/30 border border-primary-600/50" data-type="freshwater">
+                            <div class="text-xl">💧</div>
+                            <div class="text-xs mt-1 font-medium">Freshwater</div>
+                        </div>
+                        <div class="water-type-btn text-center py-3 px-2 rounded-lg cursor-pointer bg-surface-800/70 border border-surface-800" data-type="brackish">
+                            <div class="text-xl">🌓</div>
+                            <div class="text-xs mt-1 font-medium">Brackish</div>
+                        </div>
+                        <div class="water-type-btn text-center py-3 px-2 rounded-lg cursor-pointer bg-surface-800/70 border border-surface-800" data-type="saltwater">
+                            <div class="text-xl">🌊</div>
+                            <div class="text-xs mt-1 font-medium">Saltwater</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tank Size -->
+                <div class="mb-6">
+                    <h3 class="text-md font-medium mb-3 text-gray-300">Tank Size</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Gallons</label>
+                            <input type="number" id="gallons" value="20" min="1" class="input-field w-full">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Length (in)</label>
+                            <input type="number" id="length" value="24" min="1" class="input-field w-full">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Width (in)</label>
+                            <input type="number" id="width" value="12" min="1" class="input-field w-full">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Height (in)</label>
+                            <input type="number" id="height" value="16" min="1" class="input-field w-full">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Water Parameters -->
+                <div class="mb-6">
+                    <h3 class="text-md font-medium mb-3 text-gray-300">Water Parameters</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Temperature (°F)</label>
+                            <input type="number" id="temperature" value="78" min="50" max="95" class="input-field w-full">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">pH</label>
+                            <input type="number" id="pH" value="7.0" min="5.0" max="9.0" step="0.1" class="input-field w-full">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Water Hardness</label>
+                            <select id="hardness" class="input-field w-full">
+                                <option value="soft">Soft</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Filter Type</label>
+                            <select id="filterType" class="input-field w-full">
+                                <option value="hob">HOB Filter</option>
+                                <option value="canister">Canister</option>
+                                <option value="sponge">Sponge</option>
+                                <option value="internal">Internal</option>
+                                <option value="sump">Sump</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Planted Tank Option -->
+                <div class="mb-6">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="planted" class="h-5 w-5 text-primary-500 rounded border-gray-600 focus:ring-primary-500 bg-surface-800">
+                        <span class="text-sm text-gray-300 ml-2">Planted Tank</span>
+                    </label>
+                </div>
+                
+                <!-- Fish Care Tips -->
+                <div class="mt-6 bg-primary-950/30 border border-primary-900/50 p-4 rounded-lg text-xs text-gray-300 space-y-1.5">
+                    <h3 class="font-medium text-primary-300 text-sm mb-2">Fish Care Tips</h3>
+                    <p class="flex items-center"><span class="text-primary-400 mr-2">•</span>Add fish gradually to establish bacteria</p>
+                    <p class="flex items-center"><span class="text-primary-400 mr-2">•</span>Research each species before buying</p>
+                    <p class="flex items-center"><span class="text-primary-400 mr-2">•</span>Regular water changes are essential</p>
+                    <p class="flex items-center"><span class="text-primary-400 mr-2">•</span>Test water parameters routinely</p>
+                    <p class="flex items-center"><span class="text-primary-400 mr-2">•</span>1" of fish per gallon is a general rule</p>
+                </div>
+            </div>
+            
+            <!-- Fish Results Panel -->
+            <div class="lg:col-span-2 bg-surface-850/80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-surface-800/50">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+                    <h2 class="text-xl font-semibold text-primary-300">Compatible Fish</h2>
+                    <div class="flex flex-col xs:flex-row gap-2 w-full sm:w-auto">
+                        <input type="text" id="fish-search" placeholder="Search fish..." class="input-field text-sm w-full xs:w-44">
+                        <select id="fish-filter" class="input-field text-sm w-full xs:w-auto">
+                            <option value="all">All Compatible</option>
+                            <option value="peaceful">Peaceful Only</option>
+                            <option value="beginner">Beginner Friendly</option>
+                            <option value="schooling">Schooling Fish</option>
+                            <option value="smallest">Smallest First</option>
+                            <option value="largest">Largest First</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Fish Category Filters -->
+                <div class="flex flex-wrap gap-2 mb-5">
+                    <button class="category-btn px-3 py-1.5 rounded-full text-xs bg-primary-600/40 border border-primary-600/50 text-white font-medium" data-category="all">All Types</button>
+                    <button class="category-btn px-3 py-1.5 rounded-full text-xs bg-surface-800/70 border border-surface-800 text-gray-300 font-medium" data-category="freshwater">Freshwater</button>
+                    <button class="category-btn px-3 py-1.5 rounded-full text-xs bg-surface-800/70 border border-surface-800 text-gray-300 font-medium" data-category="saltwater">Saltwater</button>
+                    <button class="category-btn px-3 py-1.5 rounded-full text-xs bg-surface-800/70 border border-surface-800 text-gray-300 font-medium" data-category="brackish">Brackish</button>
+                    <button class="category-btn px-3 py-1.5 rounded-full text-xs bg-surface-800/70 border border-surface-800 text-gray-300 font-medium" data-category="coldwater">Coldwater</button>
+                </div>
+                
+                <!-- Status Bar -->
+                <div id="status-bar" class="mb-5 p-3 bg-primary-950/50 border border-primary-900/40 rounded-lg text-sm text-primary-100">
+                    <p><strong>Finding compatible fish...</strong></p>
+                </div>
+                
+                <!-- Fish Results List -->
+                <div id="fish-results" class="fish-list custom-scrollbar overflow-y-auto pr-2 max-h-[550px]"></div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="mt-8 p-5 bg-primary-950/30 rounded-xl border border-primary-900/30 text-sm text-primary-200">
+            <h3 class="font-semibold mb-3 text-primary-300">Aquarium Maintenance Essentials</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
+                <div class="bg-surface-900/70 p-3 rounded-lg">
+                    <h4 class="font-medium mb-2 text-primary-400 flex items-center">
+                        <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                        </svg>
+                        Water Care
+                    </h4>
+                    <p class="mb-1 flex items-center"><span class="text-primary-400 mr-1.5">•</span>Cycle tank before adding fish (4-6 weeks)</p>
+                    <p class="mb-1 flex items-center"><span class="text-primary-400 mr-1.5">•</span>25-30% water changes weekly/biweekly</p>
+                    <p class="flex items-center"><span class="text-primary-400 mr-1.5">•</span>Use water conditioner with all water</p>
+                </div>
+                <div class="bg-surface-900/70 p-3 rounded-lg">
+                    <h4 class="font-medium mb-2 text-primary-400 flex items-center">
+                        <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                        </svg>
+                        Fish Management
+                    </h4>
+                    <p class="mb-1 flex items-center"><span class="text-primary-400 mr-1.5">•</span>Quarantine new fish when possible</p>
+                    <p class="mb-1 flex items-center"><span class="text-primary-400 mr-1.5">•</span>Feed varied diet appropriate to species</p>
+                    <p class="flex items-center"><span class="text-primary-400 mr-1.5">•</span>Observe fish daily for health issues</p>
+                </div>
+                <div class="bg-surface-900/70 p-3 rounded-lg">
+                    <h4 class="font-medium mb-2 text-primary-400 flex items-center">
+                        <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Equipment
+                    </h4>
+                    <p class="mb-1 flex items-center"><span class="text-primary-400 mr-1.5">•</span>Clean filter media in tank water only</p>
+                    <p class="mb-1 flex items-center"><span class="text-primary-400 mr-1.5">•</span>Replace carbon media monthly</p>
+                    <p class="flex items-center"><span class="text-primary-400 mr-1.5">•</span>Check heater function regularly</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-6 text-center text-gray-500 text-xs">
+            <p>This tool provides general guidance based on common fish parameters.</p>
+            <p>Always research thoroughly before adding new fish to your aquarium.</p>
+            <p class="mt-1.5">Fish data sourced from FishBase, Seriously Fish, Reef2Reef, and more.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Fish Database
+        const fishDatabase = [
+            // FRESHWATER COMMUNITY FISH
+            {
+                name: 'Neon Tetra',
+                scientific: 'Paracheirodon innesi',
+                category: 'freshwater',
+                minTankSize: 10,
+                schoolSize: 6,
+                tempRange: [72, 80],
+                pHRange: [5.5, 7.0],
+                hardnessPreference: ['soft', 'medium'],
+                compatibility: 'peaceful',
+                plantedTank: true,
+                maxSize: 1.5,
+                region: 'South America',
+                diet: 'omnivore',
+                careLevel: 'easy',
+                lifespan: "5-8 years",
+                description: 'Small, peaceful schooling fish with bright blue and red coloration.',
+                notes: 'Sensitive to water quality and should be kept in well-established tanks.',
+                source: 'Seriously Fish, FishBase'
+            },
+            {
+                name: 'Cardinal Tetra',
+                scientific: 'Paracheirodon axelrodi',
+                category: 'freshwater',
+                minTankSize: 15,
+                schoolSize: 8,
+                tempRange: [74, 82],
+                pHRange: [5.0, 6.8],
+                hardnessPreference: ['soft'],
+                compatibility: 'peaceful',
+                plantedTank: true,
+                maxSize: 2,
+                region: 'South America',
+                diet: 'omnivore',
+                careLevel: 'moderate',
+                lifespan: "4-5 years",
+                description: 'Similar to Neon Tetras but with more extensive red coloration along the entire body.',
+                notes: 'More sensitive than Neons but also more vibrant. Prefers blackwater conditions.',
+                source: 'Seriously Fish, Aquarium Co-Op'
+            },
+            {
+                name: 'Guppy',
+                scientific: 'Poecilia reticulata',
+                category: 'freshwater',
+                minTankSize: 5,
+                schoolSize: 3,
+                tempRange: [72, 82],
+                pHRange: [6.8, 7.8],
+                hardnessPreference: ['medium', 'hard'],
+                compatibility: 'peaceful',
+                plantedTank: true,
+                maxSize: 2,
+                region: 'Central/South America',
+                diet: 'omnivore',
+                careLevel: 'easy',
+                lifespan: "1-3 years",
+                description: 'Colorful, easy-to-keep livebearers with many varieties.',
+                notes: 'Prolific breeders; males show more vibrant coloration and patterns.',
+                source: 'FishBase, The Aquarium Guide'
+            },
+            {
+                name: 'Betta',
+                scientific: 'Betta splendens',
+                category: 'freshwater',
+                minTankSize: 5,
+                schoolSize: 1,
+                tempRange: [76, 82],
+                pHRange: [6.5, 7.5],
+                hardnessPreference: ['soft', 'medium'],
+                compatibility: 'territorial',
+                plantedTank: true,
+                maxSize: 3,
+                region: 'Southeast Asia',
+                diet: 'carnivore',
+                careLevel: 'easy',
+                lifespan: "2-4 years",
+                description: 'Solitary fish with beautiful flowing fins. Males cannot be kept together.',
+                notes: 'Can be kept with peaceful community fish in larger tanks, but watch for fin-nipping species.',
+                source: 'Betta Fish Center, IBC (International Betta Congress)'
+            },
+            {
+                name: 'Angelfish',
+                scientific: 'Pterophyllum scalare',
+                category: 'freshwater',
+                minTankSize: 29,
+                schoolSize: 3,
+                tempRange: [76, 84],
+                pHRange: [6.5, 7.5],
+                hardnessPreference: ['soft', 'medium'],
+                compatibility: 'semi-aggressive',
+                plantedTank: true,
+                maxSize: 6,
+                region: 'South America',
+                diet: 'omnivore',
+                careLevel: 'moderate',
+                lifespan: "8-12 years",
+                description: 'Elegant, tall-bodied cichlids that need vertical space.',
+                notes: 'May become territorial during breeding; can eat very small tank mates as adults.',
+                source: 'Seriously Fish, Cichlid-Forum'
+            },
+            {
+                name: 'Corydoras Catfish',
+                scientific: 'Corydoras sp.',
+                category: 'freshwater',
+                minTankSize: 10,
+                schoolSize: 6,
+                tempRange: [72, 78],
+                pHRange: [6.0, 7.5],
+                hardnessPreference: ['soft', 'medium'],
+                compatibility: 'peaceful',
+                plantedTank: true,
+                maxSize: 2.5,
+                region: 'South America',
+                diet: 'omnivore',
+                careLevel: 'easy',
+                lifespan: "5-10 years",
+                description: 'Peaceful bottom-dwelling catfish that help clean the substrate.',
+                notes: 'Prefer soft, sandy substrate to protect their sensitive barbels.',
+                source: 'Planet Catfish, Seriously Fish'
+            },
+            {
+                name: 'Platy',
+                scientific: 'Xiphophorus maculatus',
+                category: 'freshwater',
+                minTankSize: 10,
+                schoolSize: 3,
+                tempRange: [72, 82],
+                pHRange: [7.0, 8.2],
+                hardnessPreference: ['medium', 'hard'],
+                compatibility: 'peaceful',
+                plantedTank: true,
+                maxSize: 3,
+                region: 'Central America',
+                diet: 'omnivore',
+                careLevel: 'easy',
+                lifespan: "3-5 years",
+                description: 'Hardy, colorful livebearers great for beginners.',
+                notes: 'Prolific breeders; available in many color varieties.',
+                source: 'The Spruce Pets, Liveaquaria'
+            },
+            {
+                name: 'Cherry Barb',
+                scientific: 'Puntius titteya',
+                category: 'freshwater',
+                minTankSize: 20,
+                schoolSize: 6,
+                tempRange: [73, 81],
+                pHRange: [6.0, 7.5],
+                hardnessPreference: ['soft', 'medium'],
